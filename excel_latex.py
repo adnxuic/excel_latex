@@ -19,7 +19,21 @@ def import_excel():
 
 def display_data(data):
     table.delete(*table.get_children())
-    for row in data:
+    
+    # Clear existing columns
+    for col in table["columns"]:
+        table.heading(col, text="")
+    
+    # Set up new columns based on the data
+    num_columns = len(data[0])
+    table["columns"] = [f"col{i}" for i in range(num_columns)]
+    
+    for i, heading in enumerate(data[0]):
+        table.heading(f"col{i}", text=heading)
+        table.column(f"col{i}", width=100)  # Set a default width
+    
+    # Insert data rows
+    for row in data[1:]:
         table.insert("", "end", values=row)
 
 def convert_to_latex(data):
@@ -84,6 +98,10 @@ paned_window.paneconfig(left_frame, stretch="always", width=200)  # Set initial 
 # Create table to display Excel data
 table = ttk.Treeview(left_frame)
 table.pack(pady=10, padx=10, fill=tk.BOTH, expand=True)
+
+# Add these lines to define columns and set headings
+table["columns"] = []
+table["show"] = "headings"
 
 # Add scrollbars to the table
 vsb = ttk.Scrollbar(left_frame, orient="vertical", command=table.yview)
