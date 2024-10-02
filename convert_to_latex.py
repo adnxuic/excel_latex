@@ -46,35 +46,8 @@ greek_alphabet = {
     "Phi": "Φ",
     "Chi": "Χ",
     "Psi": "Ψ",
-    "Omega": "Ω",
+    "Omega": "Ω"
 }
-Greek_alphabet = {
-    "Alpha": "Α",
-    "Beta": "Β",
-    "Gamma": "Γ",
-    "Delta": "Δ",
-    "Epsilon": "Ε",
-    "Zeta": "Ζ",
-    "Eta": "Η",
-    "Theta": "Θ",
-    "Iota": "Ι",
-    "Kappa": "Κ",
-    "Lambda": "Λ",
-    "Mu": "Μ",
-    "Nu": "Ν",
-    "Xi": "Ξ",
-    "Omicron": "Ο",
-    "Pi": "Π",
-    "Rho": "Ρ",
-    "Sigma": "Σ",
-    "Tau": "Τ",
-    "Upsilon": "Υ",
-    "Phi": "Φ",
-    "Chi": "Χ",
-    "Psi": "Ψ",
-    "Omega": "Ω",
-}
-
 
 class LatexConvert:
     @staticmethod
