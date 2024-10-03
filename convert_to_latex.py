@@ -59,7 +59,7 @@ class LatexConvert:
                 for char in cell_str:
                     greek_key = next((k for k, v in greek_alphabet.items() if v == char), None)
                     if greek_key:
-                        new_cell.append(f"$\{greek_key}$")
+                        new_cell.append(f"$\\{greek_key}$")
                     else:
                         new_cell.append(char)
                 data[i][j] = ''.join(new_cell)

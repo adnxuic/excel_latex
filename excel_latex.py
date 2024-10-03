@@ -17,6 +17,7 @@ class ExcelToLatexConverter:
 
         self.table = None
         self.latex_text = None
+        self.data = None  # 添加这行来存储当前数据
 
         self.create_ui()
         
@@ -31,6 +32,7 @@ class ExcelToLatexConverter:
         file_menu = tk.Menu(menu, tearoff=0)
         menu.add_cascade(label="File", menu=file_menu)
         file_menu.add_command(label="Import Excel", command=self.import_excel)
+        file_menu.add_command(label="Transpose Data", command=self.transpose_data)  # 添加新的菜单项
 
         # Create a horizontal PanedWindow
         paned_window = tk.PanedWindow(self.root, orient=tk.HORIZONTAL)
@@ -76,12 +78,26 @@ class ExcelToLatexConverter:
         try:
             wb = openpyxl.load_workbook(file_path)
             sheet = wb.active
-            data = [[cell.value for cell in row] for row in sheet.iter_rows()]
-            self.display_data(data)
-            latex_code = LatexConvert.convert_to_latex_code(data)
+            self.data = [[cell.value for cell in row] for row in sheet.iter_rows()]
+            self.display_data(self.data)
+            latex_code = LatexConvert.convert_to_latex_code(self.data)
             self.display_latex(latex_code)
         except Exception as e:
             messagebox.showerror("Error", f"Failed to import Excel file: {str(e)}")
+
+    def transpose_data(self):
+        if self.data is None:
+            messagebox.showwarning("Warning", "Please import data first.")
+            return
+        
+        # 转置数据
+        transposed_data = [list(row) for row in zip(*self.data)]
+        self.data = transposed_data
+        
+        # 更新显示
+        self.display_data(self.data)
+        latex_code = LatexConvert.convert_to_latex_code(self.data)
+        self.display_latex(latex_code)
 
     def display_data(self, data):
         self.table.delete(*self.table.get_children())
