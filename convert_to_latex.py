@@ -76,7 +76,7 @@ class LatexConvert:
         latex += "\t\\centering\n"
         latex += "\t\t\\caption{表名}\n"
         latex += "\t\t\\vspace{1em} % 表名与表格的间距\n"
-        latex += f"\t\t\\resizebox{{{0.1 * num_columns}\\textwidth}}{{{2.5 * num_rows:.1f}mm}}\n"
+        latex += f"\t\t\\resizebox{{{0.1 * num_columns:.2f}\\textwidth}}{{{2.5 * num_rows:.2f}mm}}\n"
         latex += "\t\t{\n"
         latex += f"\t\t\\begin{{tabular}}{{{'c' * num_columns}}}\n"
 
