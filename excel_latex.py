@@ -42,6 +42,47 @@ class ExcelToLatexConverter:
     def copy_to_clipboard(self, text):
         pyperclip.copy(text)
         return json.dumps({"success": True})
+    
+    def pad_numbers(self, by_column=True):
+        print('pad_numbers')
+        if self.data is None:
+            return json.dumps({"error": "Please import data first."})
+
+        def get_decimal_places(num):
+            return len(str(float(num)).split('.')[-1].rstrip('0'))
+
+        def pad_number(num, max_places):
+            return f"{float(num):.{max_places}f}"
+
+        def is_numeric(value):
+            try:
+                float(value)
+                return True
+            except ValueError:
+                return False
+
+        try:
+            for i in range(len(self.data[0]) if by_column else len(self.data)):
+                numbers = []
+                for j in range(len(self.data) if by_column else len(self.data[0])):
+                    cell = self.data[j][i] if by_column else self.data[i][j]
+                    if is_numeric(cell):
+                        numbers.append(float(cell))
+                
+                if numbers:
+                    max_places = max(get_decimal_places(num) for num in numbers)
+                    for j in range(len(self.data) if by_column else len(self.data[0])):
+                        cell = self.data[j][i] if by_column else self.data[i][j]
+                        if is_numeric(cell):
+                            padded = pad_number(float(cell), max_places)
+                            if by_column:
+                                self.data[j][i] = padded
+                            else:
+                                self.data[i][j] = padded
+
+            return json.dumps(self.data)
+        except Exception as e:
+            return json.dumps({"error": str(e)})
 
 def main():
     converter = ExcelToLatexConverter()

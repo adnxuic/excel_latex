@@ -4,125 +4,19 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Excel to LaTeX Converter</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            display: flex;
-            flex-direction: column;
-            min-height: 100vh;
-            background-color: #f0f0f0;
-            font-size: 16px;
-        }
-        .header {
-            background-color: #333;
-            color: white;
-            padding: 15px 30px;
-        }
-        h1 {
-            margin: 0;
-            font-size: 32px;
-        }
-        .menu-bar {
-            background-color: #444;
-            padding: 15px 30px;
-        }
-        .menu-bar button {
-            background-color: #555;
-            color: white;
-            border: none;
-            padding: 12px 20px;
-            margin-right: 15px;
-            cursor: pointer;
-            transition: background-color 0.3s;
-            font-size: 18px;
-        }
-        .menu-bar button:hover {
-            background-color: #666;
-        }
-        .container {
-            display: flex;
-            flex: 1;
-            padding: 30px;
-            gap: 30px;
-        }
-        .panel {
-            background-color: white;
-            border-radius: 8px;
-            padding: 25px;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-        }
-        h2 {
-            font-size: 24px;
-            margin-top: 0;
-            margin-bottom: 20px;
-        }
-        #tableContainer {
-            margin-top: 20px;
-            overflow: auto;
-            flex: 1;
-        }
-        table {
-            border-collapse: collapse;
-            width: 100%;
-            font-size: 16px;
-        }
-        th, td {
-            border: 1px solid #ddd;
-            padding: 12px;
-            text-align: left;
-        }
-        th {
-            background-color: #f2f2f2;
-            font-weight: bold;
-        }
-        #latexOutput {
-            width: 100%;
-            flex: 1;
-            resize: none;
-            margin-top: 10px;
-            font-family: monospace;
-            padding: 15px;
-            box-sizing: border-box;
-            font-size: 16px;
-            line-height: 1.5;
-        }
-        .hidden {
-            display: none;
-        }
-        .drop-zone {
-            border: 2px dashed #ccc;
-            border-radius: 8px;
-            padding: 20px;
-            text-align: center;
-            cursor: pointer;
-            margin-bottom: 20px;
-            transition: all 0.3s ease;
-        }
-        .drop-zone.dragover {
-            background-color: #e9e9e9;
-            border-color: #999;
-        }
-        .drop-zone.bottom {
-            order: 1;
-            margin-top: 20px;
-            margin-bottom: 0;
-        }
-    </style>
+    <link rel="stylesheet" href="CSS/styles.css">
 </head>
 <body>
     <div class="header">
         <h1>Excel to LaTeX Converter</h1>
     </div>
     <div class="menu-bar">
-        <button onclick="document.getElementById('fileInput').click()">Import Excel</button>
-        <input type="file" id="fileInput" accept=".xlsx,.xls" class="hidden">
-        <button onclick="transposeData()">Transpose Data</button>
-        <button onclick="copyLatex()">Copy LaTeX</button>
+        <button onclick="document.getElementById('fileInput').click()" aria-label="Import Excel">Import Excel</button>
+        <input type="file" id="fileInput" accept=".xlsx,.xls" class="hidden" aria-label="Excel file input">
+        <button onclick="transposeData()" aria-label="Transpose Data">Transpose Data</button>
+        <button onclick="copyLatex()" aria-label="Copy LaTeX">Copy LaTeX</button>
+        <button onclick="padNumbers('column')">Pad Numbers (Column)</button>
+        <button onclick="padNumbers('row')">Pad Numbers (Row)</button>
     </div>
     <div class="container">
         <div class="panel">
@@ -279,6 +173,29 @@
             const panel = dropZone.parentElement;
             dropZone.classList.add('bottom');
             panel.appendChild(dropZone);
+        }
+
+        function padNumbers(direction) {
+            const byColumn = direction === 'column';
+            pywebview.api.pad_numbers(byColumn).then(result => {
+                console.log("Received padded data:", result);
+                try {
+                    data = JSON.parse(result);
+                    if (Array.isArray(data)) {
+                        displayData();
+                        convertToLatex();
+                    } else if (data.error) {
+                        console.error("Error padding numbers:", data.error);
+                        alert("Error padding numbers: " + data.error);
+                    }
+                } catch (error) {
+                    console.error("Error parsing padded data:", error);
+                    alert("Error parsing padded data: " + error);
+                }
+            }).catch(error => {
+                console.error("Error calling pad_numbers:", error);
+                alert("Error calling pad_numbers: " + error);
+            });
         }
     </script>
 </body>
